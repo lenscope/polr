@@ -149,7 +149,7 @@ class AdminPaginationController extends Controller {
 
         $admin_links = Link::select(['short_url', 'long_url', 'clicks', 'created_at', 'creator', 'is_disabled']);
         return Datatables::of($admin_links)
-            ->addColumn('enable', [$this, 'renderToggleLinkActiveCell'])
+            ->addColumn('disable', [$this, 'renderToggleLinkActiveCell'])
             ->addColumn('delete', [$this, 'renderDeleteLinkCell'])
             ->editColumn('clicks', [$this, 'renderClicksCell'])
             ->editColumn('short_url', [$this, 'renderUTMGenerator'])
