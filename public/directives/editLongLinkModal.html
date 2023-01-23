@@ -8,16 +8,78 @@
                 <h4 class="modal-title">Long URL</h4>
             </div>
             <div class="modal-body">
-                <input type="url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" />
-                <input type="text" value="" placeholder="e.g: Twitter, Facebook" class="form-control" />
-                <input type="text" value="" placeholder="e.g: cpc, banner, email" class="form-control" />
-                <input type="text" value="" placeholder="e.g: ACME-campaign" class="form-control" />
-                <input type="text" value="" placeholder="e.g: paid keywords" class="form-control" />
-                <input type="text" value="" placeholder="e.g: text AD name" class="form-control" />
+                <input type="url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" /><br>
+                <input type="gambiarra_url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" style="display: none;" /><br>
+                <input id="utm_source" type="text" value="" placeholder="e.g: Twitter, Facebook" class="form-control" />
+                <input id="utm_medium" type="text" value="" placeholder="e.g: cpc, banner, email" class="form-control" />
+                <input id="utm_campaign" type="text" value="" placeholder="e.g: ACME-campaign" class="form-control" />
+                <input id="utm_term" type="text" value="" placeholder="e.g: paid keywords" class="form-control" />
+                <input id="utm_content" type="text" value="" placeholder="e.g: text AD name" class="form-control" />
             </div>
             <div class="modal-footer">
+                <button onclick="clearUTM()" type="button" class="btn">Limpar</button>
+                <button onclick="generateUTM()" type="button" class="btn btn-default">Gerar UTM</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChanges()">Save Changes</button>
             </div>
         </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
+<script>
+    function clearUTM() {
+        const url = document.querySelector('[type="gambiarra_url"]')
+        const url_component = document.querySelector('[type="url"]')
+        url.value = url.value.split('?')[0]
+        url_component.value = url.value.split('?')[0]
+    }
+    function generateUTM() {
+        const url = document.querySelector('[type="gambiarra_url"]').value
+        const url_component = document.querySelector('[type="url"]')
+        const utm_source = document.querySelector('#utm_source').value
+        const utm_medium = document.querySelector('#utm_medium').value
+        const utm_campaign = document.querySelector('#utm_campaign').value
+        const utm_term = document.querySelector('#utm_term').value
+        const utm_content = document.querySelector('#utm_content').value
+
+        let has_utm_source = false
+        let has_utm_medium = false
+        let has_utm_campaign = false
+        let has_utm_term = false
+        let has_utm_content = false
+
+        let has_utm = false
+        if(utm_source != '') {
+            has_utm = true
+            has_utm_source = true
+        }
+        if(utm_medium != '') {
+            has_utm = true
+            has_utm_medium = true
+        }
+        if(utm_campaign != '') {
+            has_utm = true
+            has_utm_campaign = true
+        }
+        if(utm_term != '') {
+            has_utm = true
+            has_utm_term = true
+        }
+        if(utm_content != '') {
+            has_utm = true
+            has_utm_content = true
+        }
+
+        let full_url = `${url}`
+                    + `${has_utm ? '?' : ''}`
+                        + `${has_utm_source ? 'utm_source=' + utm_source : utm_source}`
+                    + `${(has_utm_source) && has_utm_medium ? '&' : ''}` 
+                        + `${has_utm_medium ? 'utm_medium=' + utm_medium : utm_medium}`
+                    + `${(has_utm_source || has_utm_medium) && has_utm_campaign ? '&' : ''}` 
+                        + `${has_utm_campaign ? 'utm_campaign=' + utm_campaign : utm_campaign}`
+                    + `${(has_utm_source || has_utm_medium || has_utm_campaign) && has_utm_term ? '&' : ''}` 
+                        + `${has_utm_term ? 'utm_term=' + utm_term : utm_term}`
+                    + `${(has_utm_source || has_utm_medium || has_utm_campaign || has_utm_term) && has_utm_content ? '&' : ''}` 
+                        + `${has_utm_content ? 'utm_content=' + utm_content : utm_content}`
+        full_url = full_url.replace(/ /g, '%20')
+        url_component.value = full_url
+    }
+</script>
