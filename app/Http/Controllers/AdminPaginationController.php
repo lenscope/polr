@@ -33,7 +33,9 @@ class AdminPaginationController extends Controller {
     }
 
     public function renderUTMGenerator($link) {
-        return '<a target="_blank">' . 'UTM' . '</a>';
+        return $link->clicks . ' <a target="_blank" class="stats-icon" href="/admin/stats/' . e($link->short_url) . '">
+            <i class="fa fa-area-chart" aria-hidden="true"></i>
+        </a>';
     }
 
     public function renderDeleteUserCell($user) {
@@ -145,12 +147,12 @@ class AdminPaginationController extends Controller {
     public function paginateAdminLinks(Request $request) {
         self::ensureAdmin();
 
-        $admin_links = Link::select(['short_url', 'long_url', 'clicks', 'utm', 'created_at', 'creator', 'is_disabled']);
+        $admin_links = Link::select(['short_url', 'long_url', 'clicks', 'created_at', 'creator', 'is_disabled']);
         return Datatables::of($admin_links)
-            ->addColumn('disable', [$this, 'renderToggleLinkActiveCell'])
+            ->addColumn('enable', [$this, 'renderToggleLinkActiveCell'])
             ->addColumn('delete', [$this, 'renderDeleteLinkCell'])
             ->editColumn('clicks', [$this, 'renderClicksCell'])
-            ->editColumn('utm', [$this, 'renderUTMGenerator'])
+            ->editColumn('short_url', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url', 'creator'])
             ->make(true);
@@ -161,11 +163,11 @@ class AdminPaginationController extends Controller {
 
         $username = session('username');
         $user_links = Link::where('creator', $username)
-            ->select(['id', 'short_url', 'long_url', 'clicks', 'utm', 'created_at']);
+            ->select(['id', 'short_url', 'long_url', 'clicks', 'created_at']);
 
         return Datatables::of($user_links)
             ->editColumn('clicks', [$this, 'renderClicksCell'])
-            ->editColumn('utm', [$this, 'renderUTMGenerator'])
+            ->editColumn('short_url', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url'])
             ->make(true);
