@@ -32,9 +32,10 @@ class AdminPaginationController extends Controller {
         }
     }
 
-    public function renderUTMGenerator($link) {
-        return $link->short_url;
-    }
+    // public function renderUTMGenerator($link) {
+    //     return '<a target="_blank" title="' . e($link->long_url) . '" href="'. e($link->long_url) .'">' . e(str_limit($link->long_url, 50)) . '</a>
+    //         <a class="btn btn-primary btn-xs edit-long-link-btn" ng-click="editLongLink(\'' . e($link->short_url) . '\', \'' . e($link->long_url) . '\')"><i class="fa fa-edit edit-link-icon"></i></a>';
+    // }
 
     public function renderDeleteUserCell($user) {
         // Add "Delete" action button
@@ -150,7 +151,7 @@ class AdminPaginationController extends Controller {
             ->addColumn('disable', [$this, 'renderToggleLinkActiveCell'])
             ->addColumn('delete', [$this, 'renderDeleteLinkCell'])
             ->editColumn('clicks', [$this, 'renderClicksCell'])
-            ->editColumn('short_url', [$this, 'renderUTMGenerator'])
+            // ->editColumn('long_url', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url', 'creator'])
             ->make(true);
@@ -165,7 +166,7 @@ class AdminPaginationController extends Controller {
 
         return Datatables::of($user_links)
             ->editColumn('clicks', [$this, 'renderClicksCell'])
-            ->editColumn('short_url', [$this, 'renderUTMGenerator'])
+            // ->editColumn('long_url', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url'])
             ->make(true);
