@@ -33,9 +33,7 @@ class AdminPaginationController extends Controller {
     }
 
     public function renderUTMGenerator($link) {
-        return $link->clicks . ' <a target="_blank" class="stats-icon" href="/admin/stats/' . e($link->short_url) . '">
-            <i class="fa fa-area-chart" aria-hidden="true"></i>
-        </a>';
+        return $link->short_url;
     }
 
     public function renderDeleteUserCell($user) {
