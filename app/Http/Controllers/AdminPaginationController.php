@@ -32,6 +32,10 @@ class AdminPaginationController extends Controller {
         }
     }
 
+    public function renderUTMGenerator($link) {
+        return '<a target="_blank">' . 'UTM' . '</a>';
+    }
+
     public function renderDeleteUserCell($user) {
         // Add "Delete" action button
         $btn_class = '';
@@ -146,6 +150,7 @@ class AdminPaginationController extends Controller {
             ->addColumn('disable', [$this, 'renderToggleLinkActiveCell'])
             ->addColumn('delete', [$this, 'renderDeleteLinkCell'])
             ->editColumn('clicks', [$this, 'renderClicksCell'])
+            ->editColumn('utm', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url', 'creator'])
             ->make(true);
@@ -160,6 +165,7 @@ class AdminPaginationController extends Controller {
 
         return Datatables::of($user_links)
             ->editColumn('clicks', [$this, 'renderClicksCell'])
+            ->editColumn('utm', [$this, 'renderUTMGenerator'])
             ->editColumn('long_url', [$this, 'renderLongUrlCell'])
             ->escapeColumns(['short_url'])
             ->make(true);
