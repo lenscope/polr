@@ -43,6 +43,19 @@ class StatsHelper {
             ->where('created_at', '<=', $this->right_bound_parsed);
     }
 
+    public function getMonthStats() {
+        // Return stats by month from the last 3 months
+        // date => x
+        // clicks => y
+        $stats = $this->getBaseRows()
+            ->select(DB::raw("DATE_FORMAT(created_at, '%m') AS x, count(*) AS y"))
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%m')"))
+            ->orderBy('x', 'asc')
+            ->get();
+
+        return $stats;
+    }
+
     public function getDayStats() {
         // Return stats by day from the last 30 days
         // date => x

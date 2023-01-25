@@ -55,8 +55,12 @@
 
     <div class="row bottom-padding">
         <div class="col-md-8">
-            <h4>Traffic over Time</h4> (total: {{ $link->clicks }})
+            <h4>Traffic over Time (day)</h4> (total: {{ $link->clicks }})
             <canvas id="dayChart"></canvas>
+        </div>
+        <div class="col-md-8">
+            <h4>Traffic over Time (month)</h4> (total: {{ $link->clicks }})
+            <canvas id="monthChart"></canvas>
         </div>
         <div class="col-md-4">
             <h4>Traffic sources</h4>
@@ -99,6 +103,7 @@
 <script>
 // Load data
 var dayData = JSON.parse('{!! json_encode($day_stats) !!}');
+var monthData = JSON.parse('{!! json_encode($month_stats) !!}');
 var refererData = JSON.parse('{!! json_encode($referer_stats) !!}');
 var countryData = JSON.parse('{!! json_encode($country_stats) !!}');
 

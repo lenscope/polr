@@ -70,12 +70,14 @@ class StatsController extends Controller {
         }
 
         $day_stats = $stats->getDayStats();
+        $month_stats = $stats->getMonthStats();
         $country_stats = $stats->getCountryStats();
         $referer_stats = $stats->getRefererStats();
 
         return view('link_stats', [
             'link' => $link,
             'day_stats' => $day_stats,
+            'month_stats' => $month_stats,
             'country_stats' => $country_stats,
             'referer_stats' => $referer_stats,
 

@@ -4,10 +4,12 @@ var parseInputDate = function (inputDate) {
 
 polr.controller('StatsCtrl', function($scope, $compile) {
     $scope.dayChart = null;
+    $scope.monthChart = null;
     $scope.refererChart = null;
     $scope.countryChart = null;
 
     $scope.dayData = dayData;
+    $scope.monthData = monthData;
     $scope.refererData = refererData;
     $scope.countryData = countryData;
 
@@ -45,12 +47,57 @@ polr.controller('StatsCtrl', function($scope, $compile) {
         // to ensure Chart.js displays the data correctly
         $scope.dayData = _.sortBy($scope.dayData, ['x'])
     }
+    
+    $scope.populateEmptyMonthData = function () {
+        // Populate empty months in $scope.monthData with zeroes
+
+        // Number of months in range
+        var numMonths = moment(datePickerRightBound).diff(moment(datePickerLeftBound), 'months');
+        console.log(`datePickerRightBound: ${datePickerRightBound}`)
+        console.log(`datePickerLeftBound: ${datePickerLeftBound}`)
+        console.log(`numMonths: ${numMonths}`)
+        var i = moment(new Date(datePickerLeftBound).getMonth());
+        console.log(`i: ${i}`)
+
+        var monthsWithData = {};
+
+        // Generate hash map to keep track of dates with data
+        _.each($scope.monthData, function (point) {
+            var monthDate = point.x;
+            console.log(monthDate)
+            monthsWithData[monthDate] = true;
+        });
+        console.log(monthsWithData)
+
+        // Push zeroes for months without data
+        _.each(_.range(0, numMonths), function () {
+            var formattedDate = i.format('YYYY-MM-DD');
+
+            if (!(formattedDate in monthsWithData)) {
+                // If month does not have data, fill in with 0
+                $scope.monthData.push({
+                    x: formattedDate,
+                    y: 0
+                })
+            }
+
+            i.add(1, 'month');
+        });
+
+        // Sort monthData from least to most recent
+        // to ensure Chart.js displays the data correctly
+        $scope.monthData = _.sortBy($scope.monthData, ['x'])
+
+        console.log(`$scope.monthData: ${$scope.monthData}`)
+    }
 
     $scope.initDayChart = function () {
         var ctx = $("#dayChart");
 
         // Populate empty days in dayData
         $scope.populateEmptyDayData();
+        // $scope.populateEmptyMonthData();
+        // console.log($scope.dayData)
 
         $scope.dayChart = new Chart(ctx, {
             type: 'line',
@@ -70,6 +117,43 @@ polr.controller('StatsCtrl', function($scope, $compile) {
                         type: 'time',
                         time: {
                             unit: 'day'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0
+                        }
+                    }]
+                }
+            }
+        });
+    };
+
+    $scope.initMonthChart = function () {
+        var ctx = $("#monthChart");
+
+        // Populate empty months in monthData
+        $scope.populateEmptyMonthData();
+        console.log($scope.monthData)
+
+        $scope.monthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Clicks',
+                    data: $scope.monthData,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    backgroundColor: "rgba(75,192,192,0.4)",
+                    borderColor: "rgba(75,192,192,1)",
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'month'
                         }
                     }],
                     yAxes: [{
@@ -160,6 +244,7 @@ polr.controller('StatsCtrl', function($scope, $compile) {
 
     $scope.init = function () {
         $scope.initDayChart();
+        $scope.initMonthChart();
         $scope.initRefererChart();
         $scope.initCountryChart();
         $scope.initDatePickers();

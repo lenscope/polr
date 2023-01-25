@@ -8,12 +8,17 @@
                 <h4 class="modal-title">Long URL</h4>
             </div>
             <div class="modal-body">
-                <input type="url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" /><br>
-                <input type="gambiarra_url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" style="display: none;" /><br>
+                <label for="url">URL</label>
+                <input on onload="getUTMFields()" type="url" value="{{ oldLongLink }}" placeholder="Long URL..." class="form-control" /><br>
+                <label for="utm_source">Source</label>
                 <input id="utm_source" type="text" value="" placeholder="e.g: Twitter, Facebook" class="form-control" />
+                <label for="utm_medium">Medium</label>
                 <input id="utm_medium" type="text" value="" placeholder="e.g: cpc, banner, email" class="form-control" />
+                <label for="utm_campaign">Campaign</label>
                 <input id="utm_campaign" type="text" value="" placeholder="e.g: ACME-campaign" class="form-control" />
+                <label for="utm_term">Term</label>
                 <input id="utm_term" type="text" value="" placeholder="e.g: paid keywords" class="form-control" />
+                <label for="utm_content">Content</label>
                 <input id="utm_content" type="text" value="" placeholder="e.g: text AD name" class="form-control" />
             </div>
             <div class="modal-footer">
@@ -25,6 +30,33 @@
     </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
 <script>
+    getUTMFields()
+    function getUTMFields() {
+        const utm_content = document.querySelector('[type="url"]').value.split('?')[1]
+        let param_list = utm_content.split('&')
+        for (i=0;i<param_list.length;i++) {
+            let param_name = param_list[i].split('=')[0]
+            param_list[i] = param_list[i].split('=')[1]
+            param_list[i] = param_list[i].replaceAll('%20', ' ')
+
+            if(param_name == 'utm_source') {
+                document.querySelector('#utm_source').value = param_list[i]
+            }
+            if(param_name == 'utm_medium') {
+                document.querySelector('#utm_medium').value = param_list[i]
+            }
+            if(param_name == 'utm_campaign') {
+                document.querySelector('#utm_campaign').value = param_list[i]
+            }
+            if(param_name == 'utm_term') {
+                document.querySelector('#utm_term').value = param_list[i]
+            }
+            if(param_name == 'utm_content') {
+                document.querySelector('#utm_content').value = param_list[i]
+            }
+        }
+        console.log(param_list)
+    }
     function clearUTM() {
         const url = document.querySelector('[type="gambiarra_url"]')
         const url_component = document.querySelector('[type="url"]')
@@ -32,8 +64,8 @@
         url_component.value = url.value.split('?')[0]
     }
     function generateUTM() {
-        const url = document.querySelector('[type="gambiarra_url"]').value
         const url_component = document.querySelector('[type="url"]')
+        const url = url_component.value.split('?')[0]
         const utm_source = document.querySelector('#utm_source').value
         const utm_medium = document.querySelector('#utm_medium').value
         const utm_campaign = document.querySelector('#utm_campaign').value

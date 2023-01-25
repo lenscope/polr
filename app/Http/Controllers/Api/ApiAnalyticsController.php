@@ -60,6 +60,9 @@ class ApiAnalyticsController extends ApiController {
         if ($stats_type == 'day') {
             $fetched_stats = $stats->getDayStats();
         }
+        if ($stats_type == 'month') {
+            $fetched_stats = $stats->getMonthStats();
+        }
         else if ($stats_type == 'country') {
             $fetched_stats = $stats->getCountryStats();
         }
